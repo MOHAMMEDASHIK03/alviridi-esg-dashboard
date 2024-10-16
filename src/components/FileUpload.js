@@ -5,14 +5,22 @@ function FileUpload({ onDataLoaded }) {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
 
-    if (file) {
+    if (file && file.name.endsWith('.csv')) {
+     
       Papa.parse(file, {
-        header: true, // Use the first row as headers
+        header: true, 
+        skipEmptyLines: true, 
         complete: (results) => {
-          console.log(results.data); // Log the parsed data
-          onDataLoaded(results.data); // Pass the data to the parent component
+          console.log('CSV Data:', results.data);
+          if (results.data.length > 0) {
+            onDataLoaded(results.data); 
+          } else {
+            alert('The CSV file is empty or has an invalid format.');
+          }
         },
       });
+    } else {
+      alert('Unsupported file format. Please upload a valid CSV file.');
     }
   };
 
